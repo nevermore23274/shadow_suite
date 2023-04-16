@@ -1,4 +1,4 @@
-module network_tool
+module shadow_suite
 
 go 1.20
 

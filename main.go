@@ -1,7 +1,7 @@
 package main
 
 import (
-	"network_tool/scanners"
+	port_scanner "shadow_suite/scanners"
 	"sync"
 
 	"fyne.io/fyne/v2"
@@ -12,7 +12,7 @@ import (
 )
 
 // declare scanButton outside of the main function and export it
-var ScannerButton *widget.Button
+var scannerWidgetButton *widget.Button
 
 func main() {
 	// Create a new Fyne application and window
@@ -30,6 +30,10 @@ func main() {
 	hostnameEntry := widget.NewEntry()
 	hostnameEntry.SetText("scanme.nmap.org")
 
+	// Text field for user to input port(s) to be scanned
+	portEntry := widget.NewEntry()
+	portEntry.SetText("Set Port(s)")
+
 	// Create a label to display TCP connection status
 	tcpConnLabel := widget.NewLabel("")
 
@@ -37,11 +41,11 @@ func main() {
 	wg := &sync.WaitGroup{}
 
 	// Create a button to start the TCP scan
-	ScannerButton = widget.NewButton("Scanner", func() {
+	scannerWidgetButton = widget.NewButton("Scanner", func() {
 		// Button click event handler goes here
 	})
 
-	widgetButton := widget.NewButton("Begin Scan", func() {
+	startScannerButton := widget.NewButton("Begin Scan", func() {
 		// Update the label to indicate the scan has started
 		tcpConnLabel.SetText("")
 
@@ -51,18 +55,18 @@ func main() {
 		// Add a new task to the waitgroup and start a new goroutine to perform the TCP check
 		wg.Add(1)
 		go func() {
-			scanners.TcpCheck(hostnameEntry.Text, tcpConn, wg, statusChan) // use the text entered in the hostnameEntry field
+			port_scanner.TcpCheck(hostnameEntry.Text, portEntry.Text, tcpConn, wg, statusChan) // use the text entered in the hostnameEntry field
 			done <- true
 		}()
 
 		// Disable the scan button after it is clicked
-		ScannerButton.Disable()
+		scannerWidgetButton.Disable()
 	})
-	bottomLeft := container.NewVBox(widgetButton)
+	bottomLeft := container.NewVBox(startScannerButton)
 
 	// Create a vertical box to hold the scan button and hostname entry field
 	sideBar := container.NewVBox(
-		ScannerButton,
+		scannerWidgetButton,
 	)
 
 	sideBar.Resize(fyne.NewSize(150, 0))
@@ -76,12 +80,13 @@ func main() {
 		sideBar,
 		container.NewVBox(
 			// create a layout with a vertical layout and add a label to it
-			container.New(layout.NewVBoxLayout(), widget.NewLabelWithStyle("Top half", fyne.TextAlignCenter,
+			container.New(layout.NewVBoxLayout(), widget.NewLabelWithStyle("Results", fyne.TextAlignCenter,
 				fyne.TextStyle{Bold: true})),
 			container.NewMax(tcpConnScroll),
-			container.NewGridWithRows(2,
+			container.NewGridWithRows(3,
 				container.NewMax(bottomLeft),
 				container.NewMax(hostnameEntry),
+				container.NewMax(portEntry),
 			),
 		),
 	)
@@ -97,11 +102,10 @@ func main() {
 	// Wait for the TCP check to finish and mark the waitgroup as done
 	go func() {
 		<-done
-		wg.Done()
 	}()
 
 	// Start a new goroutine to update the TCP connection status label when a message is received on the status channel
-	go scanners.UpdateTcpConnLabel(statusChan, tcpConnLabel, done) // pass the statusChan channel
+	go port_scanner.UpdateTcpConnLabel(statusChan, tcpConnLabel, done) // pass the statusChan channel
 
 	// Show the main window and start the Fyne event loop
 	mainWindow.ShowAndRun()
