@@ -1,8 +1,9 @@
-package scanners
+package port_scanner
 
 import (
 	"fmt"
 	"net"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -17,27 +18,37 @@ import (
 // wg is used to coordinate goroutines
 */
 
-func TcpCheck(url string, tcpConn chan string, wg *sync.WaitGroup, statusChan chan string) {
-	defer wg.Done()
+func TcpCheck(url string, portEntry string, tcpConn chan string, wg *sync.WaitGroup, statusChan chan string) {
 
-	for i := 1; i <= 1024; i++ {
-		tcpConnStr := fmt.Sprintf("%s:%d", url, i)
+	// Create slice of port(s) given
+	portStrings := strings.Split(portEntry, " ")
+
+	// Creating slice for ports
+	portSlice := make([]int, len(portStrings))
+
+	// Converting port strings to ints
+	for i, s := range portStrings {
+		portSlice[i], _ = strconv.Atoi(s)
+	}
+
+	// Iterate over given ports and scan
+	for i, v := range portSlice {
+		tcpConnStr := fmt.Sprintf("%s:%d", url, v)
 		conn, err := net.Dial("tcp", tcpConnStr)
 
-		// Send nothing to tcpConn channel if the port is closed
 		if err != nil {
-			statusChan <- fmt.Sprintf("%d closed %s", i, "TCP")
+			statusChan <- fmt.Sprintf("%d closed %s", v, "TCP")
 			continue
 		}
 
 		conn.Close()
 
-		// Send the open port message back to the main goroutine via the statusChan
-		statusChan <- fmt.Sprintf("%d open %s", i, "TCP")
-
-		// Add a delay to slow down the function
+		statusChan <- fmt.Sprintf("%d open %s", v, "TCP")
 		time.Sleep(10 * time.Millisecond)
+		i++
 	}
+
+	defer wg.Done()
 }
 
 func UpdateTcpConnLabel(statusChan chan string, tcpConnLabel *widget.Label, done chan bool) {
