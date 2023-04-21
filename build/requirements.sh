@@ -17,7 +17,7 @@ apt-get update
 apt-get -y upgrade
 
 # Install new packages for Go/Fyne, without unnecessary recommended packages:
-apt-get -y install --no-install-recommends golang gcc libgl1-mesa-dev xorg-dev
+apt-get -y install --no-install-recommends golang gcc libgl1-mesa-dev xorg-dev ffmpeg libsm6 libxext6
 
 # Delete cached files we don't need anymore (note that if you're
 # using official Docker images for Debian or Ubuntu, this happens
