@@ -63,6 +63,14 @@ func main() {
 
 		// Disable the scan button after it is clicked
 		scannerWidgetButton.Disable()
+		
+		// Wait for the scan to complete and then re-enable the hostname entry field and scan button
+		go func() {
+			<-done
+			hostnameEntry.Enable()
+			portEntry.Enable()
+			scannerWidgetButton.Enable()
+		}()
 	})
 	bottomLeft := container.NewVBox(startScannerButton)
 
