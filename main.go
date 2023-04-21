@@ -28,11 +28,13 @@ func main() {
 
 	// Create a text field for the user to enter the hostname or IP address to scan
 	hostnameEntry := widget.NewEntry()
+	// Line below is final product, but is quicker with SetText for testing
+	//hostnameEntry.SetPlaceHolder("scanme.nmap.org")
 	hostnameEntry.SetText("scanme.nmap.org")
 
 	// Text field for user to input port(s) to be scanned
 	portEntry := widget.NewEntry()
-	portEntry.SetText("Set Port(s)")
+	portEntry.SetPlaceHolder("Set Port(s)")
 
 	// Create a label to display TCP connection status
 	tcpConnLabel := widget.NewLabel("")
