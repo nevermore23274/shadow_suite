@@ -25,7 +25,7 @@ RUN go install fyne.io/fyne/v2/cmd/fyne@latest
 COPY *.go ./
 
 # Build go binary
-RUN go build -o /go_network_tool
+RUN go build -o /shadow_suite
 
 # Run the tests in the container
 FROM build-stage AS run-test-stage
@@ -36,7 +36,7 @@ FROM gcr.io/distroless/base-debian11 AS build-realease-stage
 
 WORKDIR /
 
-COPY --from=build-stage /go_network_tool /go_network_tool
+COPY --from=build-stage /shadow_suite /shadow_suite
 
 USER nonroot:nonroot
 
@@ -49,4 +49,4 @@ USER nonroot:nonroot
 
 # Run
 # CMD ["/go_network_tool"]
-ENTRYPOINT ["/go_network_tool"]
+ENTRYPOINT ["/shadow_suite"]
