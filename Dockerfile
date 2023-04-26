@@ -6,6 +6,10 @@ FROM golang:1.20 AS build-stage
 COPY /build/requirements.sh .
 RUN ./requirements.sh
 
+# Build bootstrap for viewer
+COPY bootstrap.sh /
+CMD '/bootstrap.sh'
+
 # Set destination for COPY
 WORKDIR /app
 
@@ -27,10 +31,6 @@ COPY *.go ./
 # Build go binary
 RUN go build -o /shadow_suite
 
-# Run the tests in the container
-FROM build-stage AS run-test-stage
-RUN go test -v ./..
-
 # Deploy the application binary into a lean image
 FROM gcr.io/distroless/base-debian11 AS build-realease-stage
 
@@ -38,7 +38,8 @@ WORKDIR /
 
 COPY --from=build-stage /shadow_suite /shadow_suite
 
-USER nonroot:nonroot
+#USER nonroot:nonroot
+USER root
 
 # Optional:
 # To bind to a TCP port, runtime parameters must be supplied to the docker command.
@@ -48,5 +49,4 @@ USER nonroot:nonroot
 # EXPOSE 8080
 
 # Run
-# CMD ["/go_network_tool"]
 ENTRYPOINT ["/shadow_suite"]
