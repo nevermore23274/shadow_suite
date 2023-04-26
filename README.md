@@ -1,5 +1,5 @@
 # Shadow Suite
-This application will be written in Go using the Fyne framework, and encompasses multiple functions primarily used in the security industry.
+This application is written in Go using the Fyne framework, and encompasses multiple functions primarily used in the security industry.
 
 # Docker
 To build the docker container, this is the one command that should be needed:
