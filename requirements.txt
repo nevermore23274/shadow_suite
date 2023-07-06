@@ -1,0 +1,13 @@
+pipenv
+poetry
+virtualenv
+pydeck
+pandas
+streamlit
+requests
+pyvis
+ipaddress
+ping3
+python-nmap
+matplotlib
+plotly_express
