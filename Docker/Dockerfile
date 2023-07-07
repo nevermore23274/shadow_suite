@@ -1,7 +1,7 @@
 # Specifies base image
 FROM python:3.11
-# Install nmap
-RUN apt-get update && apt-get install -y nmap
+# Install needed tools
+RUN apt-get update && apt-get install -y nmap python3-dev graphviz libgraphviz-dev pkg-config build-essential
 # Set working directory inside container to /app (subsequent commands are executed here)
 WORKDIR /app
 # Copies requirements.txt file from host systme into current directory (./) in the image

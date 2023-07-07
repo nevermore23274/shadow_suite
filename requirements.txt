@@ -11,3 +11,5 @@ ping3
 python-nmap
 matplotlib
 plotly_express
+pycparser
+pygraphviz
