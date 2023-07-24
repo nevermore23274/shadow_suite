@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y nmap
 # Set working directory inside container to /app (subsequent commands are executed here)
 WORKDIR /app
 # Copies requirements.txt file from host system into current directory (./) in the image
-COPY requirements.txt ./requirements.txt
+COPY ./requirements.txt /app/requirements.txt
 # Upgrades pip if needed
 RUN /usr/local/bin/python3 -m pip install --upgrade pip
 # Installs packages from requirements.txt
@@ -15,6 +15,6 @@ EXPOSE 8501
 # Copies all files and directories from the host machine's current directory to the /app for the image
 COPY . /app
 # This tells Docker to execute 'streamlit run' which starts the Streamlit server
-ENTRYPOINT ["streamlit", "run", "Home.py"]
+ENTRYPOINT ["streamlit", "run"]
 # Specifies default command to be executed when the container starts
-#CMD ["Home.py"]
+CMD ["Home.py"]

@@ -1,4 +1,4 @@
-def page2():
+def page3():
     import streamlit as st
     import time
     import numpy as np

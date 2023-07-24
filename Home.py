@@ -1,17 +1,19 @@
 import streamlit as st
 from page.n1_Network_Tool import page1_funcs  # Import the dictionary of subpage functions
-from page.n2_Plotting_Demo import page2
-from page.n3_Mapping_Demo import page3
-from page.n4_DataFrame_Demo import page4
+from page.n2_Password_Tools import page2_funcs # Import the dictionary of subpage functions
+from page.n3_Plotting_Demo import page3
+from page.n4_Mapping_Demo import page4
+from page.n5_DataFrame_Demo import page5
 
 st.set_page_config(page_title="Shadow Suite", page_icon="🕸")
 
 page_names_to_funcs = {
     "Main Page": "main_page",
     "Network Tool": page1_funcs,  # Use the dictionary as the value for 'Network Tool'
-    "Page 2": page2,
-    "Page 3": page3,
-    "Page 4": page4,
+    "Password Tools": page2_funcs, # Use the dictionary as the value for 'Password Tools'
+    "Page 2": page3,
+    "Page 3": page4,
+    "Page 4": page5,
 }
 
 selected_page = st.sidebar.selectbox("Select a page", page_names_to_funcs.keys())
